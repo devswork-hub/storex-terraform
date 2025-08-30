@@ -1,0 +1,1 @@
+https://michael-scherding.medium.com/efficient-resource-management-with-terraform-in-a-mono-repo-environment-d3c82e71ec2a

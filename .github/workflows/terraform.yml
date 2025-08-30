@@ -1,0 +1,54 @@
+# # Terraform Workflow Definition
+# # This workflow allows for manual triggering via GitHub Actions UI,
+# # where you specify the domain and environment for which to run Terraform.
+# # It supports multiple domains and environments within a mono-repo.
+# name: Terraform Workflow
+
+# # Trigger for the workflow: manual invocation with two required inputs:
+# # - domain: specifies the business domain to target (e.g., 'domain1').
+# # - env: specifies the environment within the domain to target (e.g., 'dev').
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       domain:
+#         description: "Domain (e.g., domain1)" # Description for the UI
+#         required: true # This input must be provided
+#       env:
+#         description: "Environment (e.g., dev)" # Description for the UI
+#         required: true # This input must be provided
+
+# # Jobs to be executed as part of this workflow
+# jobs:
+#   # Job for executing Terraform commands
+#   terraform:
+#     name: "Terraform" # Name of the job displayed in the Actions UI
+#     runs-on: ubuntu-latest # The type of virtual host machine to use
+
+#     # Default settings for all run commands in this job
+#     defaults:
+#       run:
+#         shell: bash # Use Bash shell for all run commands
+#         # Set the working directory dynamically based on the input domain and environment
+#         working-directory: ./domains/${{ github.event.inputs.domain }}/${{ github.event.inputs.env }}
+
+#     # Steps define a sequence of tasks that will be executed as part of the job
+#     steps:
+#       # Step 1: Check out the repository at the latest commit on this branch
+#       - name: Checkout
+#         uses: actions/checkout@v2 # Uses the v2 version of the checkout action
+
+#       # Step 2: Set up Terraform CLI
+#       - name: Setup Terraform
+#         uses: hashicorp/setup-terraform@v1 # Uses the v1 version of the setup-terraform action
+
+#       # Step 3: Initialize a new or existing Terraform working directory
+#       - name: Terraform Init
+#         run: terraform init # Command to initialize the Terraform environment
+#         env:
+#           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} # Use Google credentials stored in GitHub Secrets
+
+#       # Step 4: Generate and show an execution plan
+#       - name: Terraform Plan
+#         run: terraform plan # Command to create an execution plan
+#         env:
+#           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} # Use Google credentials stored in GitHub Secrets
